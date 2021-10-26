@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option go_package = "github.com/luks-itu/miniproject2/chittyclient";
+
+message Message {
+    string message = 1;
+	int64 Lamport = 2;
+}
+
+message UserName {
+	string name = 1;
+}
+
+message ResponseCode {
+    int32 code = 1;
+    optional string description = 2;
+}
+
+
+service ChatClient {
+    rpc Broadcast(Message) returns (ResponseCode);
+    rpc AnnounceJoin(UserName) returns (ResponseCode);
+	rpc AnnounceLeave(UserName) returns (ResponseCode);
+}

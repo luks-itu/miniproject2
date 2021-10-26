@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option go_package = "github.com/luks-itu/miniproject2/chittychat";
+
+message Message {
+    string text = 1;
+}
+
+message Connection {
+    int32 port = 1;
+    optional string name = 2;
+}
+
+message ResponseCode {
+    int32 code = 1;
+    optional string description = 2;
+}
+
+
+service ChatServer {
+    rpc Join(Connection) returns (ResponseCode);
+    rpc Leave(Connection) returns (ResponseCode);
+    rpc Publish(Message) returns (ResponseCode);
+}
