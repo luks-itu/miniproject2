@@ -18,9 +18,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ChittyChatClient interface {
-	Join(ctx context.Context, in *Connection, opts ...grpc.CallOption) (*ResponseCode, error)
-	Leave(ctx context.Context, in *Connection, opts ...grpc.CallOption) (*ResponseCode, error)
-	Publish(ctx context.Context, in *Message, opts ...grpc.CallOption) (*ResponseCode, error)
+	Join(ctx context.Context, in *Server_Connection, opts ...grpc.CallOption) (*Server_ResponseCode, error)
+	Leave(ctx context.Context, in *Server_Connection, opts ...grpc.CallOption) (*Server_ResponseCode, error)
+	Publish(ctx context.Context, in *Server_Message, opts ...grpc.CallOption) (*Server_ResponseCode, error)
 }
 
 type chittyChatClient struct {
@@ -31,8 +31,8 @@ func NewChittyChatClient(cc grpc.ClientConnInterface) ChittyChatClient {
 	return &chittyChatClient{cc}
 }
 
-func (c *chittyChatClient) Join(ctx context.Context, in *Connection, opts ...grpc.CallOption) (*ResponseCode, error) {
-	out := new(ResponseCode)
+func (c *chittyChatClient) Join(ctx context.Context, in *Server_Connection, opts ...grpc.CallOption) (*Server_ResponseCode, error) {
+	out := new(Server_ResponseCode)
 	err := c.cc.Invoke(ctx, "/ChittyChat/Join", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -40,8 +40,8 @@ func (c *chittyChatClient) Join(ctx context.Context, in *Connection, opts ...grp
 	return out, nil
 }
 
-func (c *chittyChatClient) Leave(ctx context.Context, in *Connection, opts ...grpc.CallOption) (*ResponseCode, error) {
-	out := new(ResponseCode)
+func (c *chittyChatClient) Leave(ctx context.Context, in *Server_Connection, opts ...grpc.CallOption) (*Server_ResponseCode, error) {
+	out := new(Server_ResponseCode)
 	err := c.cc.Invoke(ctx, "/ChittyChat/Leave", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -49,8 +49,8 @@ func (c *chittyChatClient) Leave(ctx context.Context, in *Connection, opts ...gr
 	return out, nil
 }
 
-func (c *chittyChatClient) Publish(ctx context.Context, in *Message, opts ...grpc.CallOption) (*ResponseCode, error) {
-	out := new(ResponseCode)
+func (c *chittyChatClient) Publish(ctx context.Context, in *Server_Message, opts ...grpc.CallOption) (*Server_ResponseCode, error) {
+	out := new(Server_ResponseCode)
 	err := c.cc.Invoke(ctx, "/ChittyChat/Publish", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -62,9 +62,9 @@ func (c *chittyChatClient) Publish(ctx context.Context, in *Message, opts ...grp
 // All implementations must embed UnimplementedChittyChatServer
 // for forward compatibility
 type ChittyChatServer interface {
-	Join(context.Context, *Connection) (*ResponseCode, error)
-	Leave(context.Context, *Connection) (*ResponseCode, error)
-	Publish(context.Context, *Message) (*ResponseCode, error)
+	Join(context.Context, *Server_Connection) (*Server_ResponseCode, error)
+	Leave(context.Context, *Server_Connection) (*Server_ResponseCode, error)
+	Publish(context.Context, *Server_Message) (*Server_ResponseCode, error)
 	mustEmbedUnimplementedChittyChatServer()
 }
 
@@ -72,13 +72,13 @@ type ChittyChatServer interface {
 type UnimplementedChittyChatServer struct {
 }
 
-func (UnimplementedChittyChatServer) Join(context.Context, *Connection) (*ResponseCode, error) {
+func (UnimplementedChittyChatServer) Join(context.Context, *Server_Connection) (*Server_ResponseCode, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Join not implemented")
 }
-func (UnimplementedChittyChatServer) Leave(context.Context, *Connection) (*ResponseCode, error) {
+func (UnimplementedChittyChatServer) Leave(context.Context, *Server_Connection) (*Server_ResponseCode, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Leave not implemented")
 }
-func (UnimplementedChittyChatServer) Publish(context.Context, *Message) (*ResponseCode, error) {
+func (UnimplementedChittyChatServer) Publish(context.Context, *Server_Message) (*Server_ResponseCode, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Publish not implemented")
 }
 func (UnimplementedChittyChatServer) mustEmbedUnimplementedChittyChatServer() {}
@@ -95,7 +95,7 @@ func RegisterChittyChatServer(s grpc.ServiceRegistrar, srv ChittyChatServer) {
 }
 
 func _ChittyChat_Join_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Connection)
+	in := new(Server_Connection)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -107,13 +107,13 @@ func _ChittyChat_Join_Handler(srv interface{}, ctx context.Context, dec func(int
 		FullMethod: "/ChittyChat/Join",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChittyChatServer).Join(ctx, req.(*Connection))
+		return srv.(ChittyChatServer).Join(ctx, req.(*Server_Connection))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ChittyChat_Leave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Connection)
+	in := new(Server_Connection)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -125,13 +125,13 @@ func _ChittyChat_Leave_Handler(srv interface{}, ctx context.Context, dec func(in
 		FullMethod: "/ChittyChat/Leave",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChittyChatServer).Leave(ctx, req.(*Connection))
+		return srv.(ChittyChatServer).Leave(ctx, req.(*Server_Connection))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ChittyChat_Publish_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Message)
+	in := new(Server_Message)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -143,7 +143,7 @@ func _ChittyChat_Publish_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/ChittyChat/Publish",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChittyChatServer).Publish(ctx, req.(*Message))
+		return srv.(ChittyChatServer).Publish(ctx, req.(*Server_Message))
 	}
 	return interceptor(ctx, in, info, handler)
 }

@@ -4,16 +4,16 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/luks-itu/miniproject2/chittyclient/src/server"
+	"github.com/luks-itu/miniproject2/chittychat/src/server"
 	"google.golang.org/grpc"
 
-	pb "chittychat"
+	pb "chittyclient"
 )
 
 func main() {
 	/// SETUP SERVER ///
 	go server.Start()
-	
+
 	fmt.Print("Enter to continue")
 	fmt.Scanln()
 
@@ -29,10 +29,10 @@ func main() {
 	defer conn.Close()
 
 	// client stub
-	client := pb.NewChittyChatClient(conn)
+	client := pb.NewChittyClientClient(conn)
 
-	myMessage := pb.Server_Message{Text: "HelloWorld :D", Lamport: 0}
-	response, _ := client.Publish(context.Background(), &myMessage)
+	myMessage := pb.Client_Message{Text: "D: dlorWolleH", Lamport: 0}
+	response, _ := client.Broadcast(context.Background(), &myMessage)
 	fmt.Println(*response.Description)
 
 	fmt.Print("Enter to stop")
@@ -40,5 +40,5 @@ func main() {
 }
 
 func getTarget() string {
-	return "localhost:8080"
+	return "localhost:8081"
 }

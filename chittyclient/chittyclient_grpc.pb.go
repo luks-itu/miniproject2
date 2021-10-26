@@ -18,9 +18,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ChittyClientClient interface {
-	Broadcast(ctx context.Context, in *Message, opts ...grpc.CallOption) (*ResponseCode, error)
-	AnnounceJoin(ctx context.Context, in *UserName, opts ...grpc.CallOption) (*ResponseCode, error)
-	AnnounceLeave(ctx context.Context, in *UserName, opts ...grpc.CallOption) (*ResponseCode, error)
+	Broadcast(ctx context.Context, in *Client_Message, opts ...grpc.CallOption) (*Client_ResponseCode, error)
+	AnnounceJoin(ctx context.Context, in *Client_UserName, opts ...grpc.CallOption) (*Client_ResponseCode, error)
+	AnnounceLeave(ctx context.Context, in *Client_UserName, opts ...grpc.CallOption) (*Client_ResponseCode, error)
 }
 
 type chittyClientClient struct {
@@ -31,8 +31,8 @@ func NewChittyClientClient(cc grpc.ClientConnInterface) ChittyClientClient {
 	return &chittyClientClient{cc}
 }
 
-func (c *chittyClientClient) Broadcast(ctx context.Context, in *Message, opts ...grpc.CallOption) (*ResponseCode, error) {
-	out := new(ResponseCode)
+func (c *chittyClientClient) Broadcast(ctx context.Context, in *Client_Message, opts ...grpc.CallOption) (*Client_ResponseCode, error) {
+	out := new(Client_ResponseCode)
 	err := c.cc.Invoke(ctx, "/ChittyClient/Broadcast", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -40,8 +40,8 @@ func (c *chittyClientClient) Broadcast(ctx context.Context, in *Message, opts ..
 	return out, nil
 }
 
-func (c *chittyClientClient) AnnounceJoin(ctx context.Context, in *UserName, opts ...grpc.CallOption) (*ResponseCode, error) {
-	out := new(ResponseCode)
+func (c *chittyClientClient) AnnounceJoin(ctx context.Context, in *Client_UserName, opts ...grpc.CallOption) (*Client_ResponseCode, error) {
+	out := new(Client_ResponseCode)
 	err := c.cc.Invoke(ctx, "/ChittyClient/AnnounceJoin", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -49,8 +49,8 @@ func (c *chittyClientClient) AnnounceJoin(ctx context.Context, in *UserName, opt
 	return out, nil
 }
 
-func (c *chittyClientClient) AnnounceLeave(ctx context.Context, in *UserName, opts ...grpc.CallOption) (*ResponseCode, error) {
-	out := new(ResponseCode)
+func (c *chittyClientClient) AnnounceLeave(ctx context.Context, in *Client_UserName, opts ...grpc.CallOption) (*Client_ResponseCode, error) {
+	out := new(Client_ResponseCode)
 	err := c.cc.Invoke(ctx, "/ChittyClient/AnnounceLeave", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -62,9 +62,9 @@ func (c *chittyClientClient) AnnounceLeave(ctx context.Context, in *UserName, op
 // All implementations must embed UnimplementedChittyClientServer
 // for forward compatibility
 type ChittyClientServer interface {
-	Broadcast(context.Context, *Message) (*ResponseCode, error)
-	AnnounceJoin(context.Context, *UserName) (*ResponseCode, error)
-	AnnounceLeave(context.Context, *UserName) (*ResponseCode, error)
+	Broadcast(context.Context, *Client_Message) (*Client_ResponseCode, error)
+	AnnounceJoin(context.Context, *Client_UserName) (*Client_ResponseCode, error)
+	AnnounceLeave(context.Context, *Client_UserName) (*Client_ResponseCode, error)
 	mustEmbedUnimplementedChittyClientServer()
 }
 
@@ -72,13 +72,13 @@ type ChittyClientServer interface {
 type UnimplementedChittyClientServer struct {
 }
 
-func (UnimplementedChittyClientServer) Broadcast(context.Context, *Message) (*ResponseCode, error) {
+func (UnimplementedChittyClientServer) Broadcast(context.Context, *Client_Message) (*Client_ResponseCode, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Broadcast not implemented")
 }
-func (UnimplementedChittyClientServer) AnnounceJoin(context.Context, *UserName) (*ResponseCode, error) {
+func (UnimplementedChittyClientServer) AnnounceJoin(context.Context, *Client_UserName) (*Client_ResponseCode, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AnnounceJoin not implemented")
 }
-func (UnimplementedChittyClientServer) AnnounceLeave(context.Context, *UserName) (*ResponseCode, error) {
+func (UnimplementedChittyClientServer) AnnounceLeave(context.Context, *Client_UserName) (*Client_ResponseCode, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AnnounceLeave not implemented")
 }
 func (UnimplementedChittyClientServer) mustEmbedUnimplementedChittyClientServer() {}
@@ -95,7 +95,7 @@ func RegisterChittyClientServer(s grpc.ServiceRegistrar, srv ChittyClientServer)
 }
 
 func _ChittyClient_Broadcast_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Message)
+	in := new(Client_Message)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -107,13 +107,13 @@ func _ChittyClient_Broadcast_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: "/ChittyClient/Broadcast",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChittyClientServer).Broadcast(ctx, req.(*Message))
+		return srv.(ChittyClientServer).Broadcast(ctx, req.(*Client_Message))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ChittyClient_AnnounceJoin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserName)
+	in := new(Client_UserName)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -125,13 +125,13 @@ func _ChittyClient_AnnounceJoin_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: "/ChittyClient/AnnounceJoin",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChittyClientServer).AnnounceJoin(ctx, req.(*UserName))
+		return srv.(ChittyClientServer).AnnounceJoin(ctx, req.(*Client_UserName))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ChittyClient_AnnounceLeave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserName)
+	in := new(Client_UserName)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -143,7 +143,7 @@ func _ChittyClient_AnnounceLeave_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/ChittyClient/AnnounceLeave",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChittyClientServer).AnnounceLeave(ctx, req.(*UserName))
+		return srv.(ChittyClientServer).AnnounceLeave(ctx, req.(*Client_UserName))
 	}
 	return interceptor(ctx, in, info, handler)
 }

@@ -2,23 +2,23 @@ syntax = "proto3";
 
 option go_package = "github.com/luks-itu/miniproject2/chittyclient";
 
-message Message {
+message Client_Message {
     string text = 1;
 	int64 Lamport = 2;
 }
 
-message UserName {
+message Client_UserName {
 	string name = 1;
 }
 
-message ResponseCode {
+message Client_ResponseCode {
     int32 code = 1;
     optional string description = 2;
 }
 
 
 service ChittyClient {
-    rpc Broadcast(Message) returns (ResponseCode);
-    rpc AnnounceJoin(UserName) returns (ResponseCode);
-	rpc AnnounceLeave(UserName) returns (ResponseCode);
+    rpc Broadcast(Client_Message) returns (Client_ResponseCode);
+    rpc AnnounceJoin(Client_UserName) returns (Client_ResponseCode);
+	rpc AnnounceLeave(Client_UserName) returns (Client_ResponseCode);
 }

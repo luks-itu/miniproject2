@@ -2,7 +2,10 @@ module github.com/luks-itu/miniproject2/chittychat
 
 go 1.17
 
+replace chittyclient => ../chittyclient
+
 require (
+	chittyclient v0.0.0-00010101000000-000000000000
 	google.golang.org/grpc v1.41.0
 	google.golang.org/protobuf v1.27.1
 )
