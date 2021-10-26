@@ -17,7 +17,7 @@ message ResponseCode {
 }
 
 
-service ChatServer {
+service ChittyChat {
     rpc Join(Connection) returns (ResponseCode);
     rpc Leave(Connection) returns (ResponseCode);
     rpc Publish(Message) returns (ResponseCode);

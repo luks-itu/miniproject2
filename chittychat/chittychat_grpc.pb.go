@@ -14,158 +14,158 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// ChatServerClient is the client API for ChatServer service.
+// ChittyChatClient is the client API for ChittyChat service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ChatServerClient interface {
+type ChittyChatClient interface {
 	Join(ctx context.Context, in *Connection, opts ...grpc.CallOption) (*ResponseCode, error)
 	Leave(ctx context.Context, in *Connection, opts ...grpc.CallOption) (*ResponseCode, error)
 	Publish(ctx context.Context, in *Message, opts ...grpc.CallOption) (*ResponseCode, error)
 }
 
-type chatServerClient struct {
+type chittyChatClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewChatServerClient(cc grpc.ClientConnInterface) ChatServerClient {
-	return &chatServerClient{cc}
+func NewChittyChatClient(cc grpc.ClientConnInterface) ChittyChatClient {
+	return &chittyChatClient{cc}
 }
 
-func (c *chatServerClient) Join(ctx context.Context, in *Connection, opts ...grpc.CallOption) (*ResponseCode, error) {
+func (c *chittyChatClient) Join(ctx context.Context, in *Connection, opts ...grpc.CallOption) (*ResponseCode, error) {
 	out := new(ResponseCode)
-	err := c.cc.Invoke(ctx, "/ChatServer/Join", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ChittyChat/Join", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *chatServerClient) Leave(ctx context.Context, in *Connection, opts ...grpc.CallOption) (*ResponseCode, error) {
+func (c *chittyChatClient) Leave(ctx context.Context, in *Connection, opts ...grpc.CallOption) (*ResponseCode, error) {
 	out := new(ResponseCode)
-	err := c.cc.Invoke(ctx, "/ChatServer/Leave", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ChittyChat/Leave", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *chatServerClient) Publish(ctx context.Context, in *Message, opts ...grpc.CallOption) (*ResponseCode, error) {
+func (c *chittyChatClient) Publish(ctx context.Context, in *Message, opts ...grpc.CallOption) (*ResponseCode, error) {
 	out := new(ResponseCode)
-	err := c.cc.Invoke(ctx, "/ChatServer/Publish", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ChittyChat/Publish", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ChatServerServer is the server API for ChatServer service.
-// All implementations must embed UnimplementedChatServerServer
+// ChittyChatServer is the server API for ChittyChat service.
+// All implementations must embed UnimplementedChittyChatServer
 // for forward compatibility
-type ChatServerServer interface {
+type ChittyChatServer interface {
 	Join(context.Context, *Connection) (*ResponseCode, error)
 	Leave(context.Context, *Connection) (*ResponseCode, error)
 	Publish(context.Context, *Message) (*ResponseCode, error)
-	mustEmbedUnimplementedChatServerServer()
+	mustEmbedUnimplementedChittyChatServer()
 }
 
-// UnimplementedChatServerServer must be embedded to have forward compatible implementations.
-type UnimplementedChatServerServer struct {
+// UnimplementedChittyChatServer must be embedded to have forward compatible implementations.
+type UnimplementedChittyChatServer struct {
 }
 
-func (UnimplementedChatServerServer) Join(context.Context, *Connection) (*ResponseCode, error) {
+func (UnimplementedChittyChatServer) Join(context.Context, *Connection) (*ResponseCode, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Join not implemented")
 }
-func (UnimplementedChatServerServer) Leave(context.Context, *Connection) (*ResponseCode, error) {
+func (UnimplementedChittyChatServer) Leave(context.Context, *Connection) (*ResponseCode, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Leave not implemented")
 }
-func (UnimplementedChatServerServer) Publish(context.Context, *Message) (*ResponseCode, error) {
+func (UnimplementedChittyChatServer) Publish(context.Context, *Message) (*ResponseCode, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Publish not implemented")
 }
-func (UnimplementedChatServerServer) mustEmbedUnimplementedChatServerServer() {}
+func (UnimplementedChittyChatServer) mustEmbedUnimplementedChittyChatServer() {}
 
-// UnsafeChatServerServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ChatServerServer will
+// UnsafeChittyChatServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ChittyChatServer will
 // result in compilation errors.
-type UnsafeChatServerServer interface {
-	mustEmbedUnimplementedChatServerServer()
+type UnsafeChittyChatServer interface {
+	mustEmbedUnimplementedChittyChatServer()
 }
 
-func RegisterChatServerServer(s grpc.ServiceRegistrar, srv ChatServerServer) {
-	s.RegisterService(&ChatServer_ServiceDesc, srv)
+func RegisterChittyChatServer(s grpc.ServiceRegistrar, srv ChittyChatServer) {
+	s.RegisterService(&ChittyChat_ServiceDesc, srv)
 }
 
-func _ChatServer_Join_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChittyChat_Join_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Connection)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChatServerServer).Join(ctx, in)
+		return srv.(ChittyChatServer).Join(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ChatServer/Join",
+		FullMethod: "/ChittyChat/Join",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServerServer).Join(ctx, req.(*Connection))
+		return srv.(ChittyChatServer).Join(ctx, req.(*Connection))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChatServer_Leave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChittyChat_Leave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Connection)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChatServerServer).Leave(ctx, in)
+		return srv.(ChittyChatServer).Leave(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ChatServer/Leave",
+		FullMethod: "/ChittyChat/Leave",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServerServer).Leave(ctx, req.(*Connection))
+		return srv.(ChittyChatServer).Leave(ctx, req.(*Connection))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChatServer_Publish_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChittyChat_Publish_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Message)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChatServerServer).Publish(ctx, in)
+		return srv.(ChittyChatServer).Publish(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ChatServer/Publish",
+		FullMethod: "/ChittyChat/Publish",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServerServer).Publish(ctx, req.(*Message))
+		return srv.(ChittyChatServer).Publish(ctx, req.(*Message))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// ChatServer_ServiceDesc is the grpc.ServiceDesc for ChatServer service.
+// ChittyChat_ServiceDesc is the grpc.ServiceDesc for ChittyChat service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var ChatServer_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "ChatServer",
-	HandlerType: (*ChatServerServer)(nil),
+var ChittyChat_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "ChittyChat",
+	HandlerType: (*ChittyChatServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Join",
-			Handler:    _ChatServer_Join_Handler,
+			Handler:    _ChittyChat_Join_Handler,
 		},
 		{
 			MethodName: "Leave",
-			Handler:    _ChatServer_Leave_Handler,
+			Handler:    _ChittyChat_Leave_Handler,
 		},
 		{
 			MethodName: "Publish",
-			Handler:    _ChatServer_Publish_Handler,
+			Handler:    _ChittyChat_Publish_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

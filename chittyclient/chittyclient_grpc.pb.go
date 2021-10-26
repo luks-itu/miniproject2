@@ -14,158 +14,158 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// ChatClientClient is the client API for ChatClient service.
+// ChittyClientClient is the client API for ChittyClient service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ChatClientClient interface {
+type ChittyClientClient interface {
 	Broadcast(ctx context.Context, in *Message, opts ...grpc.CallOption) (*ResponseCode, error)
 	AnnounceJoin(ctx context.Context, in *UserName, opts ...grpc.CallOption) (*ResponseCode, error)
 	AnnounceLeave(ctx context.Context, in *UserName, opts ...grpc.CallOption) (*ResponseCode, error)
 }
 
-type chatClientClient struct {
+type chittyClientClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewChatClientClient(cc grpc.ClientConnInterface) ChatClientClient {
-	return &chatClientClient{cc}
+func NewChittyClientClient(cc grpc.ClientConnInterface) ChittyClientClient {
+	return &chittyClientClient{cc}
 }
 
-func (c *chatClientClient) Broadcast(ctx context.Context, in *Message, opts ...grpc.CallOption) (*ResponseCode, error) {
+func (c *chittyClientClient) Broadcast(ctx context.Context, in *Message, opts ...grpc.CallOption) (*ResponseCode, error) {
 	out := new(ResponseCode)
-	err := c.cc.Invoke(ctx, "/ChatClient/Broadcast", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ChittyClient/Broadcast", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *chatClientClient) AnnounceJoin(ctx context.Context, in *UserName, opts ...grpc.CallOption) (*ResponseCode, error) {
+func (c *chittyClientClient) AnnounceJoin(ctx context.Context, in *UserName, opts ...grpc.CallOption) (*ResponseCode, error) {
 	out := new(ResponseCode)
-	err := c.cc.Invoke(ctx, "/ChatClient/AnnounceJoin", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ChittyClient/AnnounceJoin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *chatClientClient) AnnounceLeave(ctx context.Context, in *UserName, opts ...grpc.CallOption) (*ResponseCode, error) {
+func (c *chittyClientClient) AnnounceLeave(ctx context.Context, in *UserName, opts ...grpc.CallOption) (*ResponseCode, error) {
 	out := new(ResponseCode)
-	err := c.cc.Invoke(ctx, "/ChatClient/AnnounceLeave", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ChittyClient/AnnounceLeave", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ChatClientServer is the server API for ChatClient service.
-// All implementations must embed UnimplementedChatClientServer
+// ChittyClientServer is the server API for ChittyClient service.
+// All implementations must embed UnimplementedChittyClientServer
 // for forward compatibility
-type ChatClientServer interface {
+type ChittyClientServer interface {
 	Broadcast(context.Context, *Message) (*ResponseCode, error)
 	AnnounceJoin(context.Context, *UserName) (*ResponseCode, error)
 	AnnounceLeave(context.Context, *UserName) (*ResponseCode, error)
-	mustEmbedUnimplementedChatClientServer()
+	mustEmbedUnimplementedChittyClientServer()
 }
 
-// UnimplementedChatClientServer must be embedded to have forward compatible implementations.
-type UnimplementedChatClientServer struct {
+// UnimplementedChittyClientServer must be embedded to have forward compatible implementations.
+type UnimplementedChittyClientServer struct {
 }
 
-func (UnimplementedChatClientServer) Broadcast(context.Context, *Message) (*ResponseCode, error) {
+func (UnimplementedChittyClientServer) Broadcast(context.Context, *Message) (*ResponseCode, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Broadcast not implemented")
 }
-func (UnimplementedChatClientServer) AnnounceJoin(context.Context, *UserName) (*ResponseCode, error) {
+func (UnimplementedChittyClientServer) AnnounceJoin(context.Context, *UserName) (*ResponseCode, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AnnounceJoin not implemented")
 }
-func (UnimplementedChatClientServer) AnnounceLeave(context.Context, *UserName) (*ResponseCode, error) {
+func (UnimplementedChittyClientServer) AnnounceLeave(context.Context, *UserName) (*ResponseCode, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AnnounceLeave not implemented")
 }
-func (UnimplementedChatClientServer) mustEmbedUnimplementedChatClientServer() {}
+func (UnimplementedChittyClientServer) mustEmbedUnimplementedChittyClientServer() {}
 
-// UnsafeChatClientServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ChatClientServer will
+// UnsafeChittyClientServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ChittyClientServer will
 // result in compilation errors.
-type UnsafeChatClientServer interface {
-	mustEmbedUnimplementedChatClientServer()
+type UnsafeChittyClientServer interface {
+	mustEmbedUnimplementedChittyClientServer()
 }
 
-func RegisterChatClientServer(s grpc.ServiceRegistrar, srv ChatClientServer) {
-	s.RegisterService(&ChatClient_ServiceDesc, srv)
+func RegisterChittyClientServer(s grpc.ServiceRegistrar, srv ChittyClientServer) {
+	s.RegisterService(&ChittyClient_ServiceDesc, srv)
 }
 
-func _ChatClient_Broadcast_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChittyClient_Broadcast_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Message)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChatClientServer).Broadcast(ctx, in)
+		return srv.(ChittyClientServer).Broadcast(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ChatClient/Broadcast",
+		FullMethod: "/ChittyClient/Broadcast",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatClientServer).Broadcast(ctx, req.(*Message))
+		return srv.(ChittyClientServer).Broadcast(ctx, req.(*Message))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChatClient_AnnounceJoin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChittyClient_AnnounceJoin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserName)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChatClientServer).AnnounceJoin(ctx, in)
+		return srv.(ChittyClientServer).AnnounceJoin(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ChatClient/AnnounceJoin",
+		FullMethod: "/ChittyClient/AnnounceJoin",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatClientServer).AnnounceJoin(ctx, req.(*UserName))
+		return srv.(ChittyClientServer).AnnounceJoin(ctx, req.(*UserName))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChatClient_AnnounceLeave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChittyClient_AnnounceLeave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserName)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChatClientServer).AnnounceLeave(ctx, in)
+		return srv.(ChittyClientServer).AnnounceLeave(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ChatClient/AnnounceLeave",
+		FullMethod: "/ChittyClient/AnnounceLeave",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatClientServer).AnnounceLeave(ctx, req.(*UserName))
+		return srv.(ChittyClientServer).AnnounceLeave(ctx, req.(*UserName))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// ChatClient_ServiceDesc is the grpc.ServiceDesc for ChatClient service.
+// ChittyClient_ServiceDesc is the grpc.ServiceDesc for ChittyClient service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var ChatClient_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "ChatClient",
-	HandlerType: (*ChatClientServer)(nil),
+var ChittyClient_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "ChittyClient",
+	HandlerType: (*ChittyClientServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Broadcast",
-			Handler:    _ChatClient_Broadcast_Handler,
+			Handler:    _ChittyClient_Broadcast_Handler,
 		},
 		{
 			MethodName: "AnnounceJoin",
-			Handler:    _ChatClient_AnnounceJoin_Handler,
+			Handler:    _ChittyClient_AnnounceJoin_Handler,
 		},
 		{
 			MethodName: "AnnounceLeave",
-			Handler:    _ChatClient_AnnounceLeave_Handler,
+			Handler:    _ChittyClient_AnnounceLeave_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
