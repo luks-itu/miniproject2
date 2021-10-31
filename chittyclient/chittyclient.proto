@@ -4,7 +4,8 @@ option go_package = "github.com/luks-itu/miniproject2/chittyclient";
 
 message Client_Message {
     string text = 1;
-	int64 Lamport = 2;
+	int64 lamport = 2;
+    string name = 3;
 }
 
 message Client_UserName {

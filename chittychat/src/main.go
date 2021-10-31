@@ -1,41 +1,17 @@
 package main
 
 import (
-	"context"
 	"fmt"
+	//"sync"
 
 	"github.com/luks-itu/miniproject2/chittychat/src/server"
-	"google.golang.org/grpc"
-
-	pb "chittyclient"
 )
 
 func main() {
-	/// SETUP SERVER ///
+	/// SETUP ACTUAL SERVER ///
 	go server.Start()
 
-	fmt.Print("Enter to continue")
-	fmt.Scanln()
-
-	/// SETUP CLIENT ///
-	// gRPC channel
-	var opts []grpc.DialOption
-	opts = append(opts, grpc.WithInsecure())
-
-	conn, err := grpc.Dial(getTarget(), opts...)
-	if err != nil {
-		panic("Could not connect!")
-	}
-	defer conn.Close()
-
-	// client stub
-	client := pb.NewChittyClientClient(conn)
-
-	myMessage := pb.Client_Message{Text: "D: dlorWolleH", Lamport: 0}
-	response, _ := client.Broadcast(context.Background(), &myMessage)
-	fmt.Println(*response.Description)
-
-	fmt.Print("Enter to stop")
+	fmt.Println("Enter to exit")
 	fmt.Scanln()
 }
 
