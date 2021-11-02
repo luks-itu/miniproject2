@@ -11,11 +11,13 @@ message Server_Message {
 message Server_Connection {
     int32 port = 1;
     optional string name = 2;
+    int64 lamport = 3;
 }
 
 message Server_ResponseCode {
     int32 code = 1;
     optional string description = 2;
+    int64 lamport = 3;
 }
 
 

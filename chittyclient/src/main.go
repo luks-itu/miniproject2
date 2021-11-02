@@ -22,9 +22,12 @@ var (
 	scanner *bufio.Scanner
 
 	stopAllSending = false
+	lamport server.Lamport
 )
 
 func main() {
+	lamport = server.Lamport{Time: 0}
+
 	/// SETUP SCANNER ///
 	scanner = bufio.NewScanner(os.Stdin)
 
@@ -46,7 +49,7 @@ func main() {
 	}
 	fmt.Printf("Logged in as: Port=%v, Username=%v\n\r", port, username)
 
-	go server.Start(port)
+	go server.Start(port, &lamport)
 
 	/// SETUP CLIENT CLIENT ///
 	// gRPC channel
@@ -71,19 +74,17 @@ func getTarget() string {
 
 func sendMessageLoop(client pbchat.ChittyChatClient) {
 	// Join server
+	server.IncrementLamport()
 	response, err := client.Join(context.Background(), &pbchat.Server_Connection{
 		Port: int32(port),
 		Name: &username,
+		Lamport: lamport.Time,
 	})
 	if err != nil {
 		panic("!!! Join went wrong !!!")
 	}
 	if (response.Code == 409) {
 		panic("Port rejected")
-	}
-
-	if port == 2 {
-		panic("!!! This is a test !!!")
 	}
 
 	// Defer leave server
@@ -113,9 +114,10 @@ func sendMessageLoop(client pbchat.ChittyChatClient) {
 			}
 		}
 
+		server.IncrementLamport()
 		message := pbchat.Server_Message{
 			Text: userMessage,
-			Lamport: 0,
+			Lamport: lamport.Time,
 			Port: int32(port),
 		}
 		_, err := client.Publish(context.Background(), &message)
@@ -133,8 +135,10 @@ func sendMessageLoop(client pbchat.ChittyChatClient) {
 func leaveServer(client pbchat.ChittyChatClient) {
 	stopAllSending = true;
 	fmt.Println("Leaving server...")
+	server.IncrementLamport()
 	response, err := client.Leave(context.Background(), &pbchat.Server_Connection{
 		Port: int32(port),
+		Lamport: lamport.Time,
 	})
 	if err != nil {
 		panic(err.Error())

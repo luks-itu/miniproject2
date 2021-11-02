@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"strconv"
+	"sync"
 
 	pbclient "github.com/luks-itu/miniproject2/chittyclient"
 	"google.golang.org/grpc"
@@ -13,23 +14,50 @@ import (
 
 //contains struct and methods for the clientserver
 
+type Lamport struct {
+	Time int64
+	Mu sync.Mutex
+}
+
 type ChittyClientServer struct {
 	pbclient.UnimplementedChittyClientServer
 	// Data goes here
 }
 
+var lamport *Lamport
+
+func IncrementLamport() {
+	lamport.Mu.Lock()
+	defer lamport.Mu.Unlock()
+	lamport.Time++
+}
+
+func SetLamport(time int64) {
+	lamport.Mu.Lock()
+	defer lamport.Mu.Unlock()
+	if time > lamport.Time {
+		lamport.Time = time
+	}
+}
+
 func (s *ChittyClientServer) Broadcast(con context.Context, message *pbclient.Client_Message) (*pbclient.Client_ResponseCode, error) {
-	printMessageFromServer(message.Text)
+	SetLamport(message.Lamport)
+	IncrementLamport()
+	printMessageFromServer(fmt.Sprintf("%d:%s", message.Lamport, message.Text))
 	return &pbclient.Client_ResponseCode{Code: 204}, nil;
 }
 
 func (s *ChittyClientServer) AnnounceJoin(con context.Context, userName *pbclient.Client_UserName) (*pbclient.Client_ResponseCode, error) {
-	printMessageFromServer(fmt.Sprintf("[%s joined the chat.]", userName.Name))
+	SetLamport(userName.Lamport)
+	IncrementLamport()
+	printMessageFromServer(fmt.Sprintf("%d:[%s joined the chat.]", userName.Lamport, userName.Name))
 	return &pbclient.Client_ResponseCode{Code: 204}, nil;
 }
 
 func (s *ChittyClientServer) AnnounceLeave(con context.Context, userName *pbclient.Client_UserName) (*pbclient.Client_ResponseCode, error) {
-	printMessageFromServer(fmt.Sprintf("[%s left the chat.]", userName.Name))
+	SetLamport(userName.Lamport)
+	IncrementLamport()
+	printMessageFromServer(fmt.Sprintf("%d:[%s left the chat.]", userName.Lamport, userName.Name))
 	return &pbclient.Client_ResponseCode{Code: 204}, nil;
 }
 
@@ -38,7 +66,8 @@ func newServer() *ChittyClientServer {
 	return &s
 }
 
-func Start(port int) {
+func Start(port int, lp *Lamport) {
+	lamport = lp
 	fmt.Println("STARTING CLIENT SERVER")
 	lis, err := net.Listen("tcp", getTarget(port))
 	if err != nil {

@@ -10,6 +10,7 @@ message Client_Message {
 
 message Client_UserName {
 	string name = 1;
+    int64 lamport = 2;
 }
 
 message Client_ResponseCode {
