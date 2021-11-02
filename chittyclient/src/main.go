@@ -82,6 +82,10 @@ func sendMessageLoop(client pbchat.ChittyChatClient) {
 		panic("Port rejected")
 	}
 
+	if port == 2 {
+		panic("!!! This is a test !!!")
+	}
+
 	// Defer leave server
 	c := make(chan os.Signal)
     signal.Notify(c, os.Interrupt, syscall.SIGTERM)
@@ -92,11 +96,14 @@ func sendMessageLoop(client pbchat.ChittyChatClient) {
     }()
 
 	// Main loop
-	fmt.Println("Client started. Ready to chat.")
+	fmt.Println("\rClient started. Ready to chat.")
+	fmt.Print("[ToAll]> ")
 	for {
 		var userMessage string
-		fmt.Print("[ToAll]> ")
 		if scanner.Scan() {
+			if scanner.Text() != "" {
+				fmt.Print("\033[F")
+			}
 			if stopAllSending {
 				return
 			}
@@ -111,12 +118,14 @@ func sendMessageLoop(client pbchat.ChittyChatClient) {
 			Lamport: 0,
 			Port: int32(port),
 		}
-		response, err := client.Publish(context.Background(), &message)
+		_, err := client.Publish(context.Background(), &message)
 		if err != nil {
 			fmt.Println("!!! Error sending the message !!!")
 			fmt.Println(err.Error())
 		} else {
-			fmt.Printf("Response: %v \n\r", response.Code)
+			if response.Code == 400 {
+				fmt.Println(response.Description)
+			}
 		}
 	}
 }

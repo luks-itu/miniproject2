@@ -20,6 +20,7 @@ type ChittyChatServer struct {
 }
 
 type UserConnection struct {
+	port int32
 	name string
 	client pbclient.ChittyClientClient
 	conn *grpc.ClientConn
@@ -45,27 +46,32 @@ func (s *ChittyChatServer) Join(con context.Context, connection *pbchat.Server_C
 
 	// server client stub
 	newConnection := UserConnection{
+		port: connection.Port,
 		name: *connection.Name,
 		client: pbclient.NewChittyClientClient(conn),
 		conn: conn,
 	}
 	userConnections[connection.Port] = &newConnection
-	postMessage(newConnection.name + " joined the chat.")
+	announceJoin(newConnection)
 	return &pbchat.Server_ResponseCode{Code: 204}, nil
 }
 
 func (s *ChittyChatServer) Leave(con context.Context, connection *pbchat.Server_Connection) (*pbchat.Server_ResponseCode, error) {
 	connectionToRemove := userConnections[connection.Port]
 	if connectionToRemove != nil {
-		postMessage(connectionToRemove.name + " left the chat.")
+		removeUserConnection(connection.Port);
 	}
-	removeUserConnection(connection.Port);
 	return &pbchat.Server_ResponseCode{Code: 204}, nil
 }
 
 func (s *ChittyChatServer) Publish(con context.Context, message *pbchat.Server_Message) (*pbchat.Server_ResponseCode, error) {
-	if strings.TrimSpace(message.Text) == "" {
+	messageText := strings.TrimSpace(message.Text)
+	if messageText == "" {
 		return &pbchat.Server_ResponseCode{Code: 400}, nil;
+	}
+	if len(messageText) > 128 {
+		des := "!!! Message too long !!!"
+		return &pbchat.Server_ResponseCode{Code: 400, Description: &des}, nil;
 	}
 	postMessage(fmt.Sprintf("[%v]: %v", userConnections[message.Port].name, message.Text))
 	return &pbchat.Server_ResponseCode{Code: 204}, nil;
@@ -97,11 +103,49 @@ func getTarget() string {
 
 func postMessage(message string) {
 	fmt.Println(message)
+	for _, user := range userConnections {
+		_, err := user.client.Broadcast(context.Background(), &pbclient.Client_Message{
+			Text: message,
+			Lamport: 0,
+		})
+		if err != nil {
+			fmt.Println(err.Error())
+			removeUserConnection(user.port)
+		}
+	}
+}
+
+func announceLeave(user UserConnection) {
+	fmt.Println(user.name + " left the chat.")
+	for _, u := range userConnections {
+		_, err := u.client.AnnounceLeave(context.Background(), &pbclient.Client_UserName{
+			Name: user.name,
+		})
+		if err != nil {
+			fmt.Println(err.Error())
+			removeUserConnection(u.port)
+		}
+	}
+}
+
+func announceJoin(user UserConnection) {
+	fmt.Println(user.name + " joined the chat.")
+	for _, u := range userConnections {
+		_, err := u.client.AnnounceJoin(context.Background(), &pbclient.Client_UserName{
+			Name: user.name,
+		})
+		if err != nil {
+			fmt.Println(err.Error())
+			removeUserConnection(u.port)
+		}
+	}
 }
 
 func removeUserConnection(port int32){
-	userConnections[port].conn.Close()
+	userToRemove := userConnections[port]
+	userToRemove.conn.Close()
 	delete(userConnections, port)
+	announceLeave(*userToRemove)
 }
 
 func closeAllConnections() {
