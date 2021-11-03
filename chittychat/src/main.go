@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/luks-itu/miniproject2/chittychat/src/server"
@@ -32,4 +33,5 @@ func main() {
 
 	fmt.Println("Enter to exit")
 	fmt.Scanln()
+	os.WriteFile("log.txt", buf.Bytes(), 0644)
 }
