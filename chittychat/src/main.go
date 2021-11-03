@@ -26,6 +26,7 @@ func main() {
 
 	logf(fmt.Sprintf("=== LOG START: %v ===", time.Now().Format(time.RFC1123)))
 
+	defer os.WriteFile("log.txt", buf.Bytes(), 0644)
 	defer fmt.Print(&buf)
 
 	/// SETUP ACTUAL SERVER ///
@@ -33,5 +34,5 @@ func main() {
 
 	fmt.Println("Enter to exit")
 	fmt.Scanln()
-	os.WriteFile("log.txt", buf.Bytes(), 0644)
+
 }
