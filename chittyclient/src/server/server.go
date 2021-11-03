@@ -16,7 +16,7 @@ import (
 
 type Lamport struct {
 	Time int64
-	Mu sync.Mutex
+	Mu   sync.Mutex
 }
 
 type ChittyClientServer struct {
@@ -44,25 +44,25 @@ func (s *ChittyClientServer) Broadcast(con context.Context, message *pbclient.Cl
 	SetLamport(message.Lamport)
 	IncrementLamport()
 	printMessageFromServer(fmt.Sprintf("%d:%s", message.Lamport, message.Text))
-	return &pbclient.Client_ResponseCode{Code: 204}, nil;
+	return &pbclient.Client_ResponseCode{Code: 204}, nil
 }
 
 func (s *ChittyClientServer) AnnounceJoin(con context.Context, userName *pbclient.Client_UserName) (*pbclient.Client_ResponseCode, error) {
 	SetLamport(userName.Lamport)
 	IncrementLamport()
 	printMessageFromServer(fmt.Sprintf("%d:[%s joined the chat.]", userName.Lamport, userName.Name))
-	return &pbclient.Client_ResponseCode{Code: 204}, nil;
+	return &pbclient.Client_ResponseCode{Code: 204}, nil
 }
 
 func (s *ChittyClientServer) AnnounceLeave(con context.Context, userName *pbclient.Client_UserName) (*pbclient.Client_ResponseCode, error) {
 	SetLamport(userName.Lamport)
 	IncrementLamport()
 	printMessageFromServer(fmt.Sprintf("%d:[%s left the chat.]", userName.Lamport, userName.Name))
-	return &pbclient.Client_ResponseCode{Code: 204}, nil;
+	return &pbclient.Client_ResponseCode{Code: 204}, nil
 }
 
 func newServer() *ChittyClientServer {
-	s := ChittyClientServer { }
+	s := ChittyClientServer{}
 	return &s
 }
 

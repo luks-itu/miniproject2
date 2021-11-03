@@ -17,12 +17,12 @@ import (
 )
 
 var (
-	port int
+	port     int
 	username string
-	scanner *bufio.Scanner
+	scanner  *bufio.Scanner
 
 	stopAllSending = false
-	lamport server.Lamport
+	lamport        server.Lamport
 )
 
 func main() {
@@ -76,25 +76,25 @@ func sendMessageLoop(client pbchat.ChittyChatClient) {
 	// Join server
 	server.IncrementLamport()
 	response, err := client.Join(context.Background(), &pbchat.Server_Connection{
-		Port: int32(port),
-		Name: &username,
+		Port:    int32(port),
+		Name:    &username,
 		Lamport: lamport.Time,
 	})
 	if err != nil {
 		panic("!!! Join went wrong !!!")
 	}
-	if (response.Code == 409) {
+	if response.Code == 409 {
 		panic("Port rejected")
 	}
 
 	// Defer leave server
 	c := make(chan os.Signal)
-    signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-    go func() {
-        <-c
-        leaveServer(client)
-        os.Exit(1)
-    }()
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-c
+		leaveServer(client)
+		os.Exit(1)
+	}()
 
 	// Main loop
 	fmt.Println("\rClient started. Ready to chat.")
@@ -116,9 +116,9 @@ func sendMessageLoop(client pbchat.ChittyChatClient) {
 
 		server.IncrementLamport()
 		message := pbchat.Server_Message{
-			Text: userMessage,
+			Text:    userMessage,
 			Lamport: lamport.Time,
-			Port: int32(port),
+			Port:    int32(port),
 		}
 		_, err := client.Publish(context.Background(), &message)
 		if err != nil {
@@ -133,11 +133,11 @@ func sendMessageLoop(client pbchat.ChittyChatClient) {
 }
 
 func leaveServer(client pbchat.ChittyChatClient) {
-	stopAllSending = true;
+	stopAllSending = true
 	fmt.Println("Leaving server...")
 	server.IncrementLamport()
 	response, err := client.Leave(context.Background(), &pbchat.Server_Connection{
-		Port: int32(port),
+		Port:    int32(port),
 		Lamport: lamport.Time,
 	})
 	if err != nil {
